@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  couchbase:
+    image: couchbase:latest
+    ports:
+      - "8091-8094:8091-8094"
+      - "11210:11210"
+    environment:
+      - COUCHBASE_ADMINISTRATOR_USERNAME=admin
+      - COUCHBASE_ADMINISTRATOR_PASSWORD=password
+    volumes:
+      - couchbase_data:/opt/couchbase/var
+
+  todo-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_COUCHBASE_CONNECTION_STRING=couchbase://couchbase
+      - SPRING_COUCHBASE_USERNAME=admin
+      - SPRING_COUCHBASE_PASSWORD=password
+    depends_on:
+      - couchbase
+
+volumes:
+  couchbase_data:
